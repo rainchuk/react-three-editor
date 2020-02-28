@@ -1,10 +1,8 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useState } from "react";
 import { observer } from "mobx-react";
-
-import { Button } from "@material-ui/core";
+import { Button, Menu, MenuItem } from "@material-ui/core";
 
 import { SceneStore } from "../../store/Scene";
-
 import { ObjectTypes } from "../../types/enums";
 
 import { useStyles } from "./styles";
@@ -14,20 +12,22 @@ export const MenuBar = observer(() => {
 
   const sceneStore = useContext(SceneStore);
 
-  /** TODO: fix for object creation */
-  // const newObject = useCallback(
-  //   (name: string, type: ObjectTypes) => (
-  //     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  //   ) => {
-  //     sceneStore.addObject({
-  //       name,
-  //       type,
-  //       position: [Math.random() * 4, Math.random() * 2, Math.random() * 4]
-  //     });
-  //   },
-  //   []
-  // );
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
+  /** Opens menu */
+  const openMenu = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      setAnchorEl(event.currentTarget);
+    },
+    []
+  );
+
+  /** Closes menu */
+  const closeMenu = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
+
+  /** Adds box with default values */
   const addBox = useCallback(() => {
     sceneStore.addObject({
       name: "Box",
@@ -42,8 +42,10 @@ export const MenuBar = observer(() => {
       position: [Math.random() * 4, Math.random() * 2, Math.random() * 4],
       multi: false
     });
+    closeMenu();
   }, []);
 
+  /** Adds sphere with default values */
   const addSphere = useCallback(() => {
     sceneStore.addObject({
       name: "Sphere",
@@ -59,13 +61,28 @@ export const MenuBar = observer(() => {
       rotation: [0, 0, 0],
       multi: false
     });
+    closeMenu();
   }, []);
 
-  // TODO: Add dropdown next
   return (
     <div className={classes.menu}>
-      <Button onClick={addBox}>Add box</Button>
-      <Button onClick={addSphere}>Add sphere</Button>
+      <Button
+        aria-controls="add-object"
+        aria-haspopup="true"
+        onClick={openMenu}
+      >
+        Add
+      </Button>
+      <Menu
+        id="add-object"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+      >
+        <MenuItem onClick={addBox}>Box</MenuItem>
+        <MenuItem onClick={addSphere}>Sphere</MenuItem>
+      </Menu>
     </div>
   );
 });
