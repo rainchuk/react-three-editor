@@ -35,6 +35,7 @@ export const Finder = observer(() => {
     <List className={classes.objects}>
       {sceneStore.getObjects.map((object, index) => (
         <FinderItem
+          key={object.name + index}
           name={object.name}
           renameObject={renameObject(index)}
           removeObject={removeObject(index)}

@@ -39,8 +39,6 @@ export const ObjectCotrols = observer(() => {
     [sceneStore.getModificationMode]
   );
 
-  // TODO: change to makeStyles, add bg to Button if mode selected
-
   return (
     <ButtonGroup
       className={classes.buttons}
