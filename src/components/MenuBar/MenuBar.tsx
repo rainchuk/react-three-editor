@@ -35,9 +35,9 @@ export const MenuBar = observer(() => {
       width: 1,
       height: 1,
       depth: 1,
-      widthSegments: 10,
-      heightSegments: 10,
-      depthSegments: 10,
+      widthSegments: 1,
+      heightSegments: 1,
+      depthSegments: 1,
       rotation: [0, 0, 0],
       position: [Math.random() * 4, Math.random() * 2, Math.random() * 4],
       multi: false
