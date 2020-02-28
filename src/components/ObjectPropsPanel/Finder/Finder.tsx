@@ -1,24 +1,19 @@
 import React, { useContext, useCallback } from "react";
-
-import {
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  IconButton,
-  InputBase
-} from "@material-ui/core";
-import Delete from "@material-ui/icons/Delete";
+import { observer } from "mobx-react";
+import { List } from "@material-ui/core";
 
 import { SceneStore } from "../../../store/Scene";
 
+import { FinderItem } from "./FinderItem";
+
 import { useStyles } from "./styles";
-import { observer } from "mobx-react";
 
 export const Finder = observer(() => {
   const classes = useStyles();
 
   const sceneStore = useContext(SceneStore);
 
+  /** Removes object */
   const removeObject = useCallback(
     (id: number) => (
       event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -28,21 +23,22 @@ export const Finder = observer(() => {
     []
   );
 
+  /** Renames object */
+  const renameObject = useCallback(
+    (index: number) => (name: string) => {
+      sceneStore.renameObject(index, name);
+    },
+    []
+  );
+
   return (
     <List className={classes.objects}>
       {sceneStore.getObjects.map((object, index) => (
-        <ListItem>
-          <InputBase value={object.name} disabled />
-          <ListItemSecondaryAction>
-            <IconButton
-              edge="end"
-              aria-label="delete"
-              onClick={removeObject(index)}
-            >
-              <Delete />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
+        <FinderItem
+          name={object.name}
+          renameObject={renameObject(index)}
+          removeObject={removeObject(index)}
+        />
       ))}
     </List>
   );
