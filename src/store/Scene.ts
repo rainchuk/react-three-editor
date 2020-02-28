@@ -1,7 +1,6 @@
 import { createContext } from "react";
 import { observable, action, computed } from "mobx";
 
-import { Object, TempObject } from "../types/interfaces";
 import { ObjectType } from "../types/types";
 
 class Scene {
@@ -74,8 +73,21 @@ class Scene {
     this.selectedIds = [this.selectedId, id];
   }
 
+  /**
+   * Resets selected objects
+   */
   @action public resetSelectedObjects() {
     this.selectedIds = [-1, -1];
+  }
+
+  /**
+   * Sets object new name
+   *
+   * @param index - object index
+   * @param name - object new name
+   */
+  @action public renameObject(index: number, name: string) {
+    this.objects[index].name = name;
   }
 }
 
