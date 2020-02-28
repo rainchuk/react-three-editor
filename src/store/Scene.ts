@@ -1,8 +1,9 @@
 import { createContext } from "react";
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, toJS } from "mobx";
 
 import { ObjectType } from "../types/types";
-import { ObjectModificationModes } from "../types/enums";
+import { ObjectModificationModes, ObjectTypes } from "../types/enums";
+import { SphereObject } from "../types/interfaces";
 
 class Scene {
   @observable private objects: ObjectType[] = [];
@@ -43,6 +44,10 @@ class Scene {
    */
   @computed public get getModificationMode() {
     return this.objectModificationMode;
+  }
+
+  @computed public get getSelectedObjectValues() {
+    return toJS(this.objects[this.selectedId]);
   }
 
   /**
@@ -107,6 +112,35 @@ class Scene {
    */
   @action public changeModificationMode(mode: ObjectModificationModes) {
     this.objectModificationMode = mode;
+  }
+
+  /**
+   * Changes radius
+   *
+   * @param radius - new radius
+   */
+  @action public changeRadius(radius: number) {
+    // console.log(this.selectedId);
+    (this.objects[this.selectedId] as SphereObject).radius = radius;
+  }
+
+  /**
+   * Changes object rotation
+   *
+   * @param rotation - new rotation
+   */
+  @action public changeRotation(rotation: ObjectType["rotation"]) {
+    this.objects[this.selectedId].rotation = rotation;
+  }
+
+  /**
+   * Changes object position
+   *
+   * @param position - new position
+   */
+  @action public changePosition(position: ObjectType["position"]) {
+    console.log(position);
+    this.objects[this.selectedId].position = position;
   }
 }
 
