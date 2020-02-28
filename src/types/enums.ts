@@ -16,3 +16,10 @@ export enum MaterialTypesEnum {
   basic = "Basic",
   phong = "Phong"
 }
+
+/** Object modification modes */
+export enum ObjectModificationModes {
+  scale = "Scale",
+  position = "Position",
+  rotation = "Rotation"
+}

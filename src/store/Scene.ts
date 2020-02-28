@@ -2,11 +2,14 @@ import { createContext } from "react";
 import { observable, action, computed } from "mobx";
 
 import { ObjectType } from "../types/types";
+import { ObjectModificationModes } from "../types/enums";
 
 class Scene {
   @observable private objects: ObjectType[] = [];
   @observable private selectedId: number = -1;
   @observable private selectedIds: [number, number] = [-1, -1];
+  @observable private objectModificationMode: ObjectModificationModes =
+    ObjectModificationModes.scale;
 
   /**
    * Getting objects
@@ -33,6 +36,13 @@ class Scene {
    */
   @computed public get getSelectedIds() {
     return this.selectedIds;
+  }
+
+  /**
+   * Returns modification mode
+   */
+  @computed public get getModificationMode() {
+    return this.objectModificationMode;
   }
 
   /**
@@ -88,6 +98,15 @@ class Scene {
    */
   @action public renameObject(index: number, name: string) {
     this.objects[index].name = name;
+  }
+
+  /**
+   * Sets modification mode
+   *
+   * @param mode - object modification mode
+   */
+  @action public changeModificationMode(mode: ObjectModificationModes) {
+    this.objectModificationMode = mode;
   }
 }
 
