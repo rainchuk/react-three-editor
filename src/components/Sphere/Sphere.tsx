@@ -1,4 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo
+} from "react";
+import { observer } from "mobx-react";
 
 import {
   SphereBufferGeometry,
@@ -8,13 +15,23 @@ import {
 } from "three";
 
 import { SphereObject } from "../../types/interfaces";
+import { SceneStore } from "../../store/Scene";
 
 /** Component prrops */
 type Props = { id: number } & Omit<SphereObject, "name" | "type">;
 
 /** Sphere object */
-export const Sphere = (props: Props) => {
-  const { rotation, position, radius, widthSegments, heightSegments } = props;
+const SphereModel = (props: Props) => {
+  const {
+    id,
+    rotation,
+    position,
+    radius,
+    widthSegments,
+    heightSegments
+  } = props;
+
+  const sceneStore = useContext(SceneStore);
 
   const [geometry, setGeometry] = useState(
     new SphereBufferGeometry(radius, widthSegments, heightSegments)
@@ -28,26 +45,42 @@ export const Sphere = (props: Props) => {
 
   const [mesh, setMesh] = useState(new Mesh(geometry, material));
 
+  /** Handles click */
+  const handleClick = useCallback(() => {
+    console.log("Clicked");
+    sceneStore.selectObject(id);
+  }, []);
+
+  /** Updates mesh */
   useEffect(() => {
     setMesh(new Mesh(geometry, material));
   }, [geometry, material]);
 
+  /** Updates radius */
+  useEffect(() => {
+    setGeometry(
+      new SphereBufferGeometry(radius, widthSegments, heightSegments)
+    );
+  }, [radius, widthSegments, heightSegments]);
+
+  /** Updates mesh position */
   useEffect(() => {
     mesh.position.x = position[0];
     mesh.position.y = position[1];
     mesh.position.z = position[2];
   }, [position, mesh]);
 
+  /** Updates mesh rotation */
   useEffect(() => {
     mesh.rotation.x = rotation[0];
     mesh.rotation.y = rotation[1];
     mesh.rotation.z = rotation[2];
   }, [rotation, mesh]);
 
-  return <primitive object={mesh} />;
+  return <primitive object={mesh} onClick={handleClick} />;
 };
 
-Sphere.defaultProps = {
+SphereModel.defaultProps = {
   phiStart: 0,
   phiLength: 6.3,
   thetaStart: 0,
@@ -56,3 +89,5 @@ Sphere.defaultProps = {
   rotation: [0, 0, 0],
   position: [0, 0, 0]
 };
+
+export const Sphere = observer(SphereModel);
